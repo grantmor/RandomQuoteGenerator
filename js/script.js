@@ -1,7 +1,11 @@
 // event listener to respond to "Show another quote" button clicks
 // when user clicks anywhere on the button, the "printQuote" function is called
+
+//TODO: More quotes, quote properties.
+
 document.getElementById('loadQuote').addEventListener("click", printQuote, false);
 
+var refreshInterval = 5;
 var usedQuotes = [];
 var quotes = [
   {
@@ -38,14 +42,17 @@ function randomInteger(lower,upper) {
 // returns a random quote object from the quotes array
 function getRandomQuote() {
   var curQuote = 0;
+  // loop generates a random number (from 0 to length of quotes array) (initialized here to 0)
   var rand = 0;
 
+  // then checks to see if it exists in the usedQuotes array
   while(curQuote !== -1) {
+    // if it's found it generates another random number
     rand = randomInteger(0, quotes.length -1);
     curQuote = usedQuotes.indexOf(rand);
+    // if not, it returns that quote and pushes its index to the usedQuotes array
     if (curQuote === -1) {
       usedQuotes.push(rand);
-
       if (usedQuotes.length === quotes.length) {
         usedQuotes = [];
       }
@@ -54,13 +61,13 @@ function getRandomQuote() {
   }
 }
 
-// converts a tag name (e.g. 'p' or 'img' to an opening tag)
+// converts a tag name (e.g. 'p' or 'img' string) to an opening tag
 function buildOpenTag(elm, classText) {
   var openTag = '<' + elm + ' class="' + classText + '">';
   return openTag;
 }
 
-// converts a tag name (e.g. 'p' or 'img' to an closing tag)
+// converts a tag name (e.g. 'p' or 'img' string) to n closing tag
 function buildCloseTag(elm) {
   var closeTag = '</' + elm + '>';
   return closeTag;
@@ -73,12 +80,20 @@ function buildElement(elm, classText, elmText) {
   return html;
 }
 
+//if the hex color string had its leading zero truncated, this function adds it back
+function padHexString(hexString) {
+  if (hexString.length < 6) {
+    hexString = '0' + hexString;
+  }
+  return hexString;
+}
+
 // returns hex html color string
 function randomHexColor() {
-  var colorMax = 16777215;
+  var colorMax = 0xffffff;
   var rgb = randomInteger(0, colorMax);
-  hexString = rgb.toString(16);
-  console.log(hexString);
+  var hexString = rgb.toString(16);
+  hexString = padHexString(hexString);
   return  '#' + hexString;
 }
 
@@ -101,3 +116,6 @@ function printQuote() {
     bg.style.backgroundColor = randomHexColor();
     quoteBox.innerHTML = html;
 }
+
+var milliseconds = refreshInterval * 1000;
+window.setInterval(printQuote, milliseconds);
