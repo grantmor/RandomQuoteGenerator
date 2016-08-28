@@ -1,8 +1,5 @@
 // event listener to respond to "Show another quote" button clicks
 // when user clicks anywhere on the button, the "printQuote" function is called
-
-//TODO: More quotes, quote properties. Split into two files. 
-
 document.getElementById('loadQuote').addEventListener("click", printQuote, false);
 
 var refreshInterval = 5;
@@ -127,16 +124,21 @@ function printQuote() {
   var html = '';
   var closeTag = true;
 
-
+  // create an element for each property of the quote object
   for (var key in quote) {
+    // don't display meta tags or blank properties
     if (key !== 'meta' && quote[key] !== '') {
+      // quote & source properties get a <p> and others are <span>s
       if (key === 'quote' || key === 'source') {
         elmType = 'p';
       } else {
         elmType = 'span';
       }
+      // don't add a </p> tag until after the source properties are printed
       if (elmType === 'p' && quote[key] !== quote.length) {
         closeTag = false;
+      } else {
+        closeTag = true;
       }
       html += buildElement(elmType, key, quote[key], closeTag);
       bg.style.backgroundColor = randomHexColor();
@@ -144,5 +146,6 @@ function printQuote() {
     }
   }
 }
+
 var milliseconds = refreshInterval * 1000;
 window.setInterval(printQuote, milliseconds);
