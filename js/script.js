@@ -1,7 +1,7 @@
 // event listener to respond to "Show another quote" button clicks
 // when user clicks anywhere on the button, the "printQuote" function is called
 
-//TODO: More quotes, quote properties.
+//TODO: More quotes, quote properties. Split into two files. 
 
 document.getElementById('loadQuote').addEventListener("click", printQuote, false);
 
@@ -10,27 +10,45 @@ var usedQuotes = [];
 var quotes = [
   {
     quote: 'Whenever you find yourself on the side of the majority, it is time to pause and reflect.',
-    source: 'Mark Twain'
+    source: 'Mark Twain',
+    year: '',
+    citation: '',
+    meta: ['politics', 'introspection']
   },
   {
-    quote: 'Be who you are and say what you feel, because those who mind don\'t matter and those who matter don\'t mind.',
-    source: 'Theodore Seuss Giesel'
+    quote: 'Every man has a right to his own opinion, but no man has a right to be wrong in his facts.',
+    source: 'Bernard Baruch',
+    year: '1950',
+    citation: 'Yale Book of Modern Proverbs',
+    meta: ['reason', 'objectivity']
   },
   {
     quote: 'To find yourself, think for yourself.',
-    source: 'Socrates'
+    source: 'Socrates',
+    year: '',
+    citation: 'The Apology',
+    meta: ['individualism', 'philisophy']
   },
   {
     quote: 'Power tends to corrupt, and absolute power corrupts absolutely. Great men are almost always bad men.',
-    source: 'John Dalberg-Acton'
+    source: 'John Dalberg-Acton',
+    year: '1887',
+    citation: 'Letter to Archbishop Mandell Creighton',
+    meta: ['politics', 'government']
   },
   {
     quote: 'Always listen to experts. They\'ll tell you what can\'t be done, and why. Then do it.',
-    source: 'Robert A. Heinlein'
+    source: 'Robert A. Heinlein',
+    year: '1973',
+    citation: 'Time Enough For Love',
+    meta: ['motivation', 'individualism', 'innovation']
   },
   {
     quote: 'Progress isn\'t made by early risers. It\'s made by lazy men trying to find easier ways to do something.',
-    source: 'Robert A. Heinlein'
+    source: 'Robert A. Heinlein',
+    year: '1973',
+    citation: 'Time Enough For Love',
+    meta: ['laziness', 'innovation']
   }
 ];
 
@@ -74,9 +92,12 @@ function buildCloseTag(elm) {
 }
 
 // returns a full html element complete with class and inner html
-function buildElement(elm, classText, elmText) {
+function buildElement(elm, classText, elmText, closeTag) {
   var html = '';
-  html = buildOpenTag(elm, classText) + elmText + buildCloseTag(elm);
+  html = buildOpenTag(elm, classText) + elmText;
+  if (closeTag === true) {
+    html += buildCloseTag(elm);
+ }
   return html;
 }
 
@@ -104,18 +125,24 @@ function printQuote() {
   var bg = document.getElementsByTagName('body')[0];
   var elmType = '';
   var html = '';
+  var closeTag = true;
+
 
   for (var key in quote) {
-    if (key === 'quote' || key === 'source') {
-      elmType = 'p';
-    } else {
-      elmType = 'span';
+    if (key !== 'meta' && quote[key] !== '') {
+      if (key === 'quote' || key === 'source') {
+        elmType = 'p';
+      } else {
+        elmType = 'span';
+      }
+      if (elmType === 'p' && quote[key] !== quote.length) {
+        closeTag = false;
+      }
+      html += buildElement(elmType, key, quote[key], closeTag);
+      bg.style.backgroundColor = randomHexColor();
+      quoteBox.innerHTML = html;
     }
-    html += buildElement(elmType, key, quote[key]);
   }
-    bg.style.backgroundColor = randomHexColor();
-    quoteBox.innerHTML = html;
 }
-
 var milliseconds = refreshInterval * 1000;
 window.setInterval(printQuote, milliseconds);
